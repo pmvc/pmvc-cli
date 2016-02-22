@@ -28,4 +28,4 @@ pmvc-cli
    * php composer.phar require pmvc/pmvc-cli
 
 #### 2.3 Inatall globally
-   * composer global require pmvc/pmvc-cli
+   * php composer.phar global require pmvc/pmvc-cli
