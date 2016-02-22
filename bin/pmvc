@@ -7,7 +7,12 @@ ini_set("display_startup_errors", true);
 $dir = realpath('./');
 $file = $dir.'/vendor/autoload.php';
 if (!is_file($file)) {
-    $file = __DIR__.'/../vendor/autoload.php';
+    $dirs = explode('/',$dir);
+    while(!is_file($file)&&count($dirs)){
+        array_pop($dirs);
+        $dir = join('/',$dirs);
+        $file = $dir.'/vendor/autoload.php';
+    }
 }
 include($file);
 PMVC\Load::mvc();
@@ -28,8 +33,11 @@ $options = [
    _ERROR_REPORTING=>E_ALL
 ];
 $controller = new \PMVC\ActionController($options);
+$parent = \PMVC\getOption(_RUN_PARENT);
+$parent = str_replace(['..','.'],[$dir,$dir],$parent);
 $controller->store([
    _VIEW_ENGINE=>'cli',
+   _RUN_PARENT=>$parent
 ]);
 $cmd = \PMVC\plug('cli');
 $cmd->dump('Workplace: '.$dir);
