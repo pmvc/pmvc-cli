@@ -1,0 +1,22 @@
+#!/bin/env php
+<?php
+$file = __DIR__.'/../../autoload.php';
+$dotenv = __DIR__.'/../../../.env';
+if (!is_file($file)) {
+    $file = __DIR__.'/../vendor/autoload.php';
+    $dotenv = __DIR__.'/../.env';
+}
+include($file);
+PMVC\Load::mvc();
+$options = [ 
+   _PLUGIN=>[
+       'dispatcher'=>null,
+       'cmd'=>null,
+       'dotenv'=>['envFile'=>__DIR__.'/../../../.env'],
+       'error'=>null
+   ],
+   _ROUTER=>'cmd',
+   _ERROR_REPORTING=>E_ALL
+];
+$controller = new \PMVC\ActionController($options);
+echo 'test';
