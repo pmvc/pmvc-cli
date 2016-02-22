@@ -27,3 +27,5 @@ pmvc-cli
 #### 2.2 Or use composer command-line
    * php composer.phar require pmvc/pmvc-cli
 
+#### 2.3 Inatall globally
+   * composer global require pmvc/pmvc-cli
