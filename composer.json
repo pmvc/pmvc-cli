@@ -12,7 +12,9 @@
     ],
     "require": {
         "pmvc/pmvc": "*",
-        "pmvc-plugin/cmd": "*"
+        "pmvc-plugin/cli": "*",
+        "pmvc-plugin/dispatcher": "*",
+        "pmvc-plugin/dotenv": "*"
     },
     "bin": ["bin/pmvc"],
     "minimum-stability": "dev"

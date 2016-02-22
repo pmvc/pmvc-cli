@@ -1,16 +1,12 @@
 <?php
 PMVC\Load::plug();
 PMVC\addPlugInFolder('../');
-class Pmvc-cliTest extends PHPUnit_Framework_TestCase
+class PMVCCliTest extends PHPUnit_Framework_TestCase
 {
-    private $_plug = 'pmvc-cli';
     function testPlugin()
     {
-        ob_start();
-        print_r(PMVC\plug($this->_plug));
-        $output = ob_get_contents();
-        ob_end_clean();
-        $this->assertContains($this->_plug,$output);
+        $output = shell_exec("bin/pmvc");
+        $this->assertContains('Workplace',$output);
     }
 
 }
