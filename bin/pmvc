@@ -49,20 +49,31 @@ class PmvcGlobalCli
         $dotenv = $dir.'/.env';
         $this->dotenv = $dotenv;
 
+        // plugins 
         $plugins = [
             'dispatcher'=>null,
             'cli'=>null
         ];
-
         if (\PMVC\realpath($dotenv)) {
             $plugins['dotenv'] = ['envFile'=>$dotenv];
         }
+
         $options = [ 
            _PLUGIN=>$plugins,
            _ROUTER=>'cli',
            _ERROR_REPORTING=>E_ALL
         ];
         $controller = new \PMVC\ActionController($options);
+        $verifyPlugin = true;
+        array_walk($plugins, function($item, $key) use (&$verifyPlugin){
+            if (!\PMVC\exists($key,'plugin')) {
+                $verifyPlugin = false;
+                echo 'Plugin ['.$key.'] not installed.'."\n";
+            }
+        });
+        if (!$verifyPlugin) {
+            return false;
+        }
         $parent = \PMVC\getOption(_RUN_PARENT);
         $parent = str_replace(['..','.'],[$dir,$dir],$parent);
         $controller->store([
