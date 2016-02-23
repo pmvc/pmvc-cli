@@ -1,4 +1,4 @@
-#!/bin/env php
+#!/usr/bin/env php
 <?php
 # debug
 ini_set("error_reporting", E_ALL);
@@ -42,9 +42,9 @@ $controller->store([
 $cmd = \PMVC\plug('cli');
 $cmd->dump('Workplace: '.$dir);
 $cmd->dump('DotEnv: '.$dotenv);
-$clienv = $dir.'/.env.cli';
-if (\PMVC\realpath($clienv)) {
-    \PMVC\plug('dotenv')->toPMVC($clienv);
+$cliEnv = $dir.'/.env.cli';
+if (\PMVC\realpath($cliEnv)) {
+    \PMVC\plug('dotenv')->toPMVC($cliEnv);
 }
 if ($controller->plugApp(null, null, 'index_cli')){
     $controller();
