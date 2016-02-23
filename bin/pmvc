@@ -12,6 +12,7 @@ if ($cli->findAutoload()) {
 class PmvcGlobalCli
 {
     private $dir;
+    private $dotenv;
 
     public function findAutoload()
     {
@@ -44,8 +45,9 @@ class PmvcGlobalCli
     public function init()
     {
         PMVC\Load::mvc();
-        $dir = \PMVC\realpath($dir);
+        $dir = \PMVC\realpath($this->dir);
         $dotenv = $dir.'/.env';
+        $this->dotenv = $dotenv;
 
         $plugins = [
             'dispatcher'=>null,
@@ -79,8 +81,8 @@ class PmvcGlobalCli
 
     public function welcome()
     {
-        $this->dump('Workplace: '.$dir);
-        $this->dump('DotEnv: '.$dotenv);
+        $this->dump('Workplace: '.$this->dir);
+        $this->dump('DotEnv: '.$this->dotenv);
     }
 }
 
