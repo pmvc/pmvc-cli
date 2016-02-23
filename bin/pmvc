@@ -4,48 +4,83 @@
 ini_set("error_reporting", E_ALL);
 ini_set("display_errors", true);
 ini_set("display_startup_errors", true);
-$dir = realpath('./');
-$file = $dir.'/vendor/autoload.php';
-if (!is_file($file)) {
-    $dirs = explode('/',$dir);
-    while(!is_file($file)&&count($dirs)){
-        array_pop($dirs);
-        $dir = join('/',$dirs);
+$cli = new PmvcGlobalCli();
+if ($cli->findAutoload()) {
+    $cli->init();
+}
+
+class PmvcGlobalCli
+{
+    private $dir;
+
+    public function findAutoload()
+    {
+        $dir = realpath('./');
         $file = $dir.'/vendor/autoload.php';
+        if (!is_file($file)) {
+            $dirs = explode('/',$dir);
+            while(!is_file($file)&&count($dirs)){
+                array_pop($dirs);
+                $dir = join('/',$dirs);
+                $file = $dir.'/vendor/autoload.php';
+            }
+        }
+        if (is_file($file)) {
+            include($file);
+            $this->dir = $dir;
+            return true;
+        } else {
+            echo 'Can\'t find autoload file'."\n";
+            return false;
+        }
+    }
+
+    public function dump($s)
+    {
+        $cmd = \PMVC\plug('cli');
+        $cmd->dump($s);
+    }
+
+    public function init()
+    {
+        PMVC\Load::mvc();
+        $dir = \PMVC\realpath($dir);
+        $dotenv = $dir.'/.env';
+
+        $plugins = [
+            'dispatcher'=>null,
+            'cli'=>null
+        ];
+
+        if (\PMVC\realpath($dotenv)) {
+            $plugins['dotenv'] = ['envFile'=>$dotenv];
+        }
+        $options = [ 
+           _PLUGIN=>$plugins,
+           _ROUTER=>'cli',
+           _ERROR_REPORTING=>E_ALL
+        ];
+        $controller = new \PMVC\ActionController($options);
+        $parent = \PMVC\getOption(_RUN_PARENT);
+        $parent = str_replace(['..','.'],[$dir,$dir],$parent);
+        $controller->store([
+           _VIEW_ENGINE=>'cli',
+           _RUN_PARENT=>$parent
+        ]);
+        $cliEnv = $dir.'/.env.cli';
+        if (\PMVC\realpath($cliEnv)) {
+            \PMVC\plug('dotenv')->toPMVC($cliEnv);
+        }
+        $this->welcome();
+        if ($controller->plugApp(null, null, 'index_cli')){
+            $controller();
+        }
+    }
+
+    public function welcome()
+    {
+        $this->dump('Workplace: '.$dir);
+        $this->dump('DotEnv: '.$dotenv);
     }
 }
-include($file);
-PMVC\Load::mvc();
-$dir = \PMVC\realpath($dir);
-$dotenv = $dir.'/.env';
 
-$plugins = [
-    'dispatcher'=>null,
-    'cli'=>null
-];
-
-if (\PMVC\realpath($dotenv)) {
-    $plugins['dotenv'] = ['envFile'=>$dotenv];
-}
-$options = [ 
-   _PLUGIN=>$plugins,
-   _ROUTER=>'cli',
-   _ERROR_REPORTING=>E_ALL
-];
-$controller = new \PMVC\ActionController($options);
-$parent = \PMVC\getOption(_RUN_PARENT);
-$parent = str_replace(['..','.'],[$dir,$dir],$parent);
-$controller->store([
-   _VIEW_ENGINE=>'cli',
-   _RUN_PARENT=>$parent
-]);
-$cmd = \PMVC\plug('cli');
-$cmd->dump('Workplace: '.$dir);
-$cmd->dump('DotEnv: '.$dotenv);
-$cliEnv = $dir.'/.env.cli';
-if (\PMVC\realpath($cliEnv)) {
-    \PMVC\plug('dotenv')->toPMVC($cliEnv);
-}
-if ($controller->plugApp(null, null, 'index_cli')){
-    $controller();
-}
