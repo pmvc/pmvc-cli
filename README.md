@@ -4,8 +4,19 @@
 [![License](https://poser.pugx.org/pmvc/pmvc-cli/license)](https://packagist.org/packages/pmvc/pmvc-cli)
 [![Total Downloads](https://poser.pugx.org/pmvc/pmvc-cli/downloads)](https://packagist.org/packages/pmvc/pmvc-cli) 
 
-pmvc-cli
+PMVC-CLI
 ===============
+PMVC-CLI design to install globally and it could run anywhere under project folder.
+So recommend install it globally.
+```
+composer global require pmvc/pmvc-cli
+```
+You could run it as
+```
+pmvc [app name]:[action name]
+```
+
+
 
 ## Install with Composer
 ### 1. Download composer
@@ -29,4 +40,4 @@ pmvc-cli
 
 #### 2.3 Inatall globally
    * php composer.phar global require pmvc/pmvc-cli
-   * composer global require pmvc/pmvc-cli
+
