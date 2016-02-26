@@ -45,6 +45,7 @@ class PmvcGlobalCli
     public function init()
     {
         PMVC\Load::mvc();
+        PMVC\addPlugInFolder(__DIR__.'/vendor/pmvc-plugin');
         $dir = \PMVC\realpath($this->dir);
         $dotenv = $dir.'/.env';
         $this->dotenv = $dotenv;
