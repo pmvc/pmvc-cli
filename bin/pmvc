@@ -77,8 +77,9 @@ class PmvcGlobalCli
         }
         $parent = \PMVC\getOption(_RUN_PARENT);
         $parent = str_replace(['..','.'],[$dir,$dir],$parent);
+        $input = $this->parseParams();
         $controller->store([
-           _VIEW_ENGINE=>'cli',
+           _VIEW_ENGINE=>$input->view,
            _RUN_PARENT=>$parent
         ]);
         $cliEnv = $dir.'/.env.cli';
@@ -86,9 +87,26 @@ class PmvcGlobalCli
             \PMVC\plug('dotenv')->toPMVC($cliEnv);
         }
         $this->welcome();
-        if ($controller->plugApp(null, null, 'index_cli')){
+        if ($controller->plugApp(null, null, $input->index)){
             $controller();
         }
+    }
+
+    public function parseParams()
+    {
+        $cmd = \PMVC\plug('cli');
+        $params = (object)$cmd->getopt();
+        $default = (object)[
+            'index'=>'index_cli',
+            'view'=>'cli'
+        ];
+        if (isset($params->i)) {
+            $default->index = $params->i;
+        }
+        if (isset($params->v)) {
+            $default->view = $params->v;
+        }
+        return $default;
     }
 
     public function welcome()
