@@ -58,13 +58,12 @@ class PmvcGlobalCli
         if (\PMVC\realpath($dotenv)) {
             $plugins['dotenv'] = ['envFile'=>$dotenv];
         }
-
         $options = [ 
            _PLUGIN=>$plugins,
-           _ROUTER=>'cli',
-           _ERROR_REPORTING=>E_ALL
+           _ROUTER=>'cli'
         ];
-        $controller = new \PMVC\ActionController($options);
+        $controller = \PMVC\getC();
+        $controller->setOption($options); 
         $verifyPlugin = true;
         array_walk($plugins, function($item, $key) use (&$verifyPlugin){
             if (!\PMVC\exists($key,'plugin')) {
