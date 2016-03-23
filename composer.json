@@ -13,6 +13,9 @@
     "require": {
         "pmvc/pmvc": "*",
         "pmvc-plugin/cli": "*",
+        "pmvc-plugin/error": "*",
+        "pmvc-plugin/debug": "*",
+        "pmvc-plugin/debug_cli": "*",
         "pmvc-plugin/dispatcher": "*",
         "pmvc-plugin/dotenv": "*"
     },

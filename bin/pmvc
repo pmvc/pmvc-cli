@@ -53,7 +53,9 @@ class PmvcGlobalCli
         // plugins 
         $plugins = [
             'dispatcher'=>null,
-            'cli'=>null
+            'cli'=>null,
+            'error'=>null,
+            'debug'=>['output'=>'debug_cli'],
         ];
         if (\PMVC\realpath($dotenv)) {
             $plugins['dotenv'] = ['envFile'=>$dotenv];
@@ -77,6 +79,9 @@ class PmvcGlobalCli
         $parent = \PMVC\getOption(_RUN_PARENT);
         $parent = str_replace(['..','.'],[$dir,$dir],$parent);
         $input = $this->parseParams();
+        if ($input->trace) {
+            \PMVC\plug('debug_cli')['level']='trace';
+        }
         $controller->store([
            _VIEW_ENGINE=>$input->view,
            _RUN_PARENT=>$parent
@@ -97,13 +102,17 @@ class PmvcGlobalCli
         $params = (object)$cmd->getopt();
         $default = (object)[
             'index'=>'index_cli',
-            'view'=>'cli'
+            'view'=>'cli',
+            'trace'=>false
         ];
         if (isset($params->i)) {
             $default->index = $params->i;
         }
         if (isset($params->v)) {
             $default->view = $params->v;
+        }
+        if (isset($params->t)) {
+            $default->trace = true;
         }
         return $default;
     }
