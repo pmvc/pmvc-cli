@@ -91,7 +91,7 @@ class PmvcGlobalCli
             \PMVC\plug('dotenv')->toPMVC($cliEnv);
         }
         $this->welcome();
-        if ($controller->plugApp(null, null, $input->index)){
+        if ($controller->plugApp([], [], $input->index)){
             $controller();
         }
     }
