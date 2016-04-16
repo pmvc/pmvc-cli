@@ -44,11 +44,13 @@ class PmvcGlobalCli
 
     public function init()
     {
-        PMVC\Load::mvc();
+        PMVC\Load::plug();
         PMVC\addPlugInFolder(__DIR__.'/../../../pmvc-plugin');
         $dir = \PMVC\realpath($this->dir);
         $dotenv = $dir.'/.env';
         $this->dotenv = $dotenv;
+        $controller = \PMVC\plug('controller');
+        $controller[_ROUTER] = 'cli';
 
         // plugins 
         $plugins = [
@@ -60,12 +62,7 @@ class PmvcGlobalCli
         if (\PMVC\realpath($dotenv)) {
             $plugins['dotenv'] = ['envFile'=>$dotenv];
         }
-        $options = [ 
-           _PLUGIN=>$plugins,
-           _ROUTER=>'cli'
-        ];
-        $controller = \PMVC\getC();
-        $controller->setOption($options); 
+        \PMVC\initPlugIn($plugins);
         $verifyPlugin = true;
         array_walk($plugins, function($item, $key) use (&$verifyPlugin){
             if (!\PMVC\exists($key,'plugin')) {
@@ -82,7 +79,7 @@ class PmvcGlobalCli
         if ($input->trace) {
             \PMVC\plug('debug_cli')['level']='trace';
         }
-        $controller->store([
+        $controller->slient([
            _VIEW_ENGINE=>$input->view,
            _RUN_PARENT=>$parent
         ]);
