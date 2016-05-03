@@ -52,7 +52,7 @@ class PmvcGlobalCli
             'error'=>null,
             'debug'=>['output'=>'debug_cli'],
         ]);
-        addPlugInFolder(__DIR__.'/../../../pmvc-plugin');
+        addPlugInFolders([__DIR__.'/../../../pmvc-plugin']);
 
         /*
          * Dot Env
