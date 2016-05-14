@@ -48,6 +48,7 @@ class PmvcGlobalCli
         Load::plug([
             'controller'=>null,
             'dispatcher'=>null,
+            'default_forward'=>null,
             'cli'=>null,
             'error'=>null,
             'debug'=>['output'=>'debug_cli'],

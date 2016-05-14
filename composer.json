@@ -18,6 +18,7 @@
         "pmvc-plugin/debug": "*",
         "pmvc-plugin/debug_cli": "*",
         "pmvc-plugin/dispatcher": "*",
+        "pmvc-plugin/default_forward": "*",
         "pmvc-plugin/dotenv": "*"
     },
     "bin": ["bin/pmvc"],
