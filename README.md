@@ -15,8 +15,17 @@ You could run it as
 ```
 pmvc [app name]:[action name]
 ```
-
-
+## Require / Need install following pakaging by yourself
+```
+  "pmvc-plugin/controller",
+  "pmvc-plugin/cli",
+  "pmvc-plugin/error",
+  "pmvc-plugin/debug",
+  "pmvc-plugin/debug_cli,
+  "pmvc-plugin/dispatcher",
+  "pmvc-plugin/default_forward",
+  "pmvc-plugin/dotenv"
+```
 
 ## Install with Composer
 ### 1. Download composer
