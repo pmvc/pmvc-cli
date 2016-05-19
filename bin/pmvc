@@ -45,15 +45,23 @@ class PmvcGlobalCli
 
     public function init()
     {
-        Load::plug([
+        Load::plug();
+        $plugs = [
             'controller'=>null,
             'dispatcher'=>null,
             'default_forward'=>null,
             'cli'=>null,
             'error'=>null,
             'debug'=>['output'=>'debug_cli'],
-        ]);
+        ];
         addPlugInFolders([__DIR__.'/../../../pmvc-plugin']);
+        $init = initPlugin($plugs,true);
+        foreach($init as $k=>$plug){
+            if (!$plug) {
+                return !trigger_error('[Plugin: '.$k.'] not installed.');
+            }
+        }
+        initPlugin($plugs);
 
         /*
          * Dot Env
