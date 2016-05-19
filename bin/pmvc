@@ -64,7 +64,7 @@ class PmvcGlobalCli
             $this->dotenv = $dotenv;
             plug('dotenv', ['envFile'=>$dotenv]);
         }
-        $parent = getOption(_RUN_PARENT);
+        $parent = getOption(_RUN_APPS);
         $parent = str_replace(['..','.'],[$dir,$dir],$parent);
         $input = $this->parseParams();
         if ($input->trace) {
@@ -75,7 +75,7 @@ class PmvcGlobalCli
         $controller->silent([
             _ROUTER=>'cli',
            _VIEW_ENGINE=>$input->view,
-           _RUN_PARENT=>$parent
+           _RUN_APPS=>$parent
         ]);
         $cliEnv = $dir.'/.env.cli';
         if (realpath($cliEnv)) {
