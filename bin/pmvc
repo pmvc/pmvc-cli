@@ -1,6 +1,9 @@
 #!/usr/bin/env php
 <?php
 namespace PMVC;
+
+use PMVC\Event;
+
 # debug
 ini_set("error_reporting", E_ALL);
 ini_set("display_errors", true);
@@ -81,13 +84,18 @@ class PmvcGlobalCli
 
         $controller = plug('controller');
         $controller->silent([
-            _ROUTER=>'cli',
-           _VIEW_ENGINE=>$input->view,
-           _RUN_APPS=>$parent
+           _ROUTER      => 'cli',
+           _VIEW_ENGINE => $input->view,
+           _RUN_APPS    => $parent
         ]);
         $cliEnv = $dir.'/.env.cli';
         if (realpath($cliEnv)) {
             plug('dotenv')->toPMVC($cliEnv);
+        }
+        $plugins = getOption(_PLUGIN);
+        if (!empty($plugins)) {
+            initPlugin($plugins);
+            option('set', _PLUGIN, null);
         }
         $this->welcome();
         if ($controller->plugApp([], [], $input->index)){
