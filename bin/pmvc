@@ -110,10 +110,11 @@ class PmvcGlobalCli
         ];
         $init = initPlugin($optionPlugin,true);
         foreach($init as $k=>$plug){
-            if ($plug) {
-                plug($k, $optionPlugin[$k]);
+            if (!$plug) {
+                unset($optionPlugin[$k]);
             }
         }
+        initPlugin($optionPlugin);
     }
 
     public function parseParams()
