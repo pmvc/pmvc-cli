@@ -66,7 +66,7 @@ class PmvcGlobalCli
         }
 
         $controller = plug('controller');
-        $controller->silent([
+        \PMVC\option('set',[
            _ROUTER      => 'cli',
            _VIEW_ENGINE => $input->view,
            _RUN_APPS    => $parent
