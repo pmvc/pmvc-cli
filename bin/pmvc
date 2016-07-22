@@ -48,24 +48,7 @@ class PmvcGlobalCli
 
     public function init()
     {
-        Load::plug();
-        $plugs = [
-            'controller'=>null,
-            'dispatcher'=>null,
-            'default_forward'=>null,
-            'cli'=>null,
-            'error'=>null,
-            'debug'=>['output'=>'debug_cli'],
-        ];
-        addPlugInFolders([__DIR__.'/../../../pmvc-plugin']);
-        $init = initPlugin($plugs,true);
-        foreach($init as $k=>$plug){
-            if (!$plug) {
-                return !trigger_error('[Plugin: '.$k.'] not installed.');
-            }
-        }
-        initPlugin($plugs);
-
+        $this->initPlugin();
         /*
          * Dot Env
          */
@@ -100,6 +83,36 @@ class PmvcGlobalCli
         $this->welcome();
         if ($controller->plugApp([], [], $input->index)){
             $controller->process();
+        }
+    }
+
+    public function initPlugin()
+    {
+        Load::plug();
+        $plugs = [
+            'controller'=>null,
+            'dispatcher'=>null,
+            'default_forward'=>null,
+            'cli'=>null,
+        ];
+        addPlugInFolders([__DIR__.'/../../../pmvc-plugin']);
+        $init = initPlugin($plugs,true);
+        foreach($init as $k=>$plug){
+            if (!$plug) {
+                return !trigger_error('[Plugin: '.$k.'] not installed.');
+            }
+        }
+        initPlugin($plugs);
+        $optionPlugin = [
+            'dev'=>null,
+            'error'=>null,
+            'debug'=>['output'=>'debug_cli'],
+        ];
+        $init = initPlugin($optionPlugin,true);
+        foreach($init as $k=>$plug){
+            if ($plug) {
+                plug($k, $optionPlugin[$k]);
+            }
         }
     }
 
