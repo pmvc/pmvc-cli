@@ -15,15 +15,21 @@ You could run it as
 ```
 pmvc [app name]:[action name]
 ```
+
 ## Require / Need install following pakaging by yourself
+The following package controll by each project, need install by yourself.
 ```
-  "pmvc-plugin/controller",
-  "pmvc-plugin/cli",
+        "pmvc-plugin/cli"             : "*",
+        "pmvc-plugin/controller"      : "*",
+        "pmvc-plugin/default_forward" : "*",
+        "pmvc-plugin/dispatcher"      : "*" 
+```
+
+## Suggests to install.
+```
   "pmvc-plugin/error",
   "pmvc-plugin/debug",
   "pmvc-plugin/debug_cli",
-  "pmvc-plugin/dispatcher",
-  "pmvc-plugin/default_forward",
   "pmvc-plugin/dotenv"
 ```
 
