@@ -21,7 +21,8 @@ class PmvcGlobalCli
     public function checkDependency()
     {
        return $this->findAutoload() &&
-        $this->hasPMVC();
+        $this->hasPMVC() && 
+        $this->initPlugin();
     }
 
     public function findAutoload()
@@ -41,8 +42,10 @@ class PmvcGlobalCli
             $this->dir = $dir;
             return true;
         } else {
-            echo 'Can\'t find autoload file.'."\n";
-            return false;
+            return !trigger_error(
+                'Can\'t find autoload file.',
+                E_USER_ERROR
+            );
         }
     }
 
@@ -51,9 +54,46 @@ class PmvcGlobalCli
         if (class_exists(__NAMESPACE__.'\Load')) {
             return true;
         } else {
-            echo 'Can\'t find PMVC core library.'."\n";
-            return false;
+            return !trigger_error(
+                'Can\'t find PMVC core library.',
+                E_USER_ERROR
+            );
         }
+    }
+
+    public function initPlugin()
+    {
+        Load::plug();
+        $plugs = [
+            'controller'=>null,
+            'dispatcher'=>null,
+            'default_forward'=>null,
+            'cli'=>null,
+        ];
+        addPlugInFolders([__DIR__.'/../../../pmvc-plugin']);
+        $init = initPlugin($plugs,true);
+        foreach($init as $k=>$plug){
+            if (!$plug) {
+                return !trigger_error(
+                    '[Plugin: '.$k.'] not installed.',
+                    E_USER_ERROR
+                );
+            }
+        }
+        initPlugin($plugs);
+        $optionPlugin = [
+            'dev'=>null,
+            'error'=>null,
+            'debug'=>['output'=>'debug_cli'],
+        ];
+        $init = initPlugin($optionPlugin,true);
+        foreach($init as $k=>$plug){
+            if (!$plug) {
+                unset($optionPlugin[$k]);
+            }
+        }
+        initPlugin($optionPlugin);
+        return true;
     }
 
     public function dump($s)
@@ -64,8 +104,7 @@ class PmvcGlobalCli
 
     public function init()
     {
-        $this->initPlugin();
-        /*
+        /**
          * Dot Env
          */
         $dir = realpath($this->dir);
@@ -102,36 +141,6 @@ class PmvcGlobalCli
         }
     }
 
-    public function initPlugin()
-    {
-        Load::plug();
-        $plugs = [
-            'controller'=>null,
-            'dispatcher'=>null,
-            'default_forward'=>null,
-            'cli'=>null,
-        ];
-        addPlugInFolders([__DIR__.'/../../../pmvc-plugin']);
-        $init = initPlugin($plugs,true);
-        foreach($init as $k=>$plug){
-            if (!$plug) {
-                return !trigger_error('[Plugin: '.$k.'] not installed.');
-            }
-        }
-        initPlugin($plugs);
-        $optionPlugin = [
-            'dev'=>null,
-            'error'=>null,
-            'debug'=>['output'=>'debug_cli'],
-        ];
-        $init = initPlugin($optionPlugin,true);
-        foreach($init as $k=>$plug){
-            if (!$plug) {
-                unset($optionPlugin[$k]);
-            }
-        }
-        initPlugin($optionPlugin);
-    }
 
     public function parseParams()
     {
