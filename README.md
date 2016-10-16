@@ -48,5 +48,10 @@ pmvc [app name]:[action name]
    * php composer.phar require pmvc/pmvc-cli
 
 #### 2.3 Inatall globally
-   * php composer.phar global require pmvc/pmvc-cli
-
+```
+php composer.phar global require pmvc/pmvc-cli
+```
+or  
+```
+composer global require pmvc/pmvc-cli
+```
