@@ -17,7 +17,7 @@ pmvc [app name]:[action name]
 ```
 
 ## Require / Need install following pakaging by yourself
-The following package controll by each project, need install by yourself.
+These packages controll by each project and not instlled as global, need install by yourself.
 ```
         "pmvc-plugin/cli"             : "*",
         "pmvc-plugin/controller"      : "*",
