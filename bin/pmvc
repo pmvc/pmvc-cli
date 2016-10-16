@@ -9,7 +9,7 @@ ini_set("error_reporting", E_ALL);
 ini_set("display_errors", true);
 ini_set("display_startup_errors", true);
 $cli = new PmvcGlobalCli();
-if ($cli->findAutoload()) {
+if ($cli->checkDependency()) {
     $cli->init();
 }
 
@@ -17,6 +17,12 @@ class PmvcGlobalCli
 {
     private $dir;
     private $dotenv;
+
+    public function checkDependency()
+    {
+       return $this->findAutoload() &&
+        $this->hasPMVC();
+    }
 
     public function findAutoload()
     {
@@ -35,7 +41,17 @@ class PmvcGlobalCli
             $this->dir = $dir;
             return true;
         } else {
-            echo 'Can\'t find autoload file'."\n";
+            echo 'Can\'t find autoload file.'."\n";
+            return false;
+        }
+    }
+
+    public function hasPMVC()
+    {
+        if (class_exists(__NAMESPACE__.'\Load')) {
+            return true;
+        } else {
+            echo 'Can\'t find PMVC core library.'."\n";
             return false;
         }
     }
