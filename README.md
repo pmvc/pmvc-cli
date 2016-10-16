@@ -21,7 +21,7 @@ pmvc [app name]:[action name]
   "pmvc-plugin/cli",
   "pmvc-plugin/error",
   "pmvc-plugin/debug",
-  "pmvc-plugin/debug_cli,
+  "pmvc-plugin/debug_cli",
   "pmvc-plugin/dispatcher",
   "pmvc-plugin/default_forward",
   "pmvc-plugin/dotenv"
