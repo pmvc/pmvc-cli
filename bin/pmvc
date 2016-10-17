@@ -135,7 +135,9 @@ class PmvcGlobalCli
             initPlugin($plugins);
             option('set', _PLUGIN, null);
         }
-        $this->welcome();
+        if ($input->welcome) {
+            $this->welcome();
+        }
         if ($controller->plugApp([], [], $input->index)){
             $controller->process();
         }
@@ -145,22 +147,14 @@ class PmvcGlobalCli
     public function parseParams()
     {
         $cmd = plug('cli');
-        $params = (object)$cmd->getopt();
-        $default = (object)[
-            'index'=>'index_cli',
-            'view'=>'cli',
-            'trace'=>false
+        $params = $cmd->getopt();
+        $cook = (object)[
+            'index'  =>\PMVC\value($params,['i'],'index_cli'),
+            'view'   =>\PMVC\value($params,['v'],'cli'),
+            'trace'  =>(bool)\PMVC\value($params,['t'],false),
+            'welcome'=>(bool)\PMVC\value($params,['w'],true),
         ];
-        if (isset($params->i)) {
-            $default->index = $params->i;
-        }
-        if (isset($params->v)) {
-            $default->view = $params->v;
-        }
-        if (isset($params->t)) {
-            $default->trace = true;
-        }
-        return $default;
+        return $cook;
     }
 
     public function welcome()
