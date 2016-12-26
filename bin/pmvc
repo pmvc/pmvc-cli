@@ -2,8 +2,6 @@
 <?php
 namespace PMVC;
 
-use PMVC\Event;
-
 # debug
 ini_set("error_reporting", E_ALL);
 ini_set("display_errors", true);
@@ -121,7 +119,7 @@ class PmvcGlobalCli
         }
 
         $controller = plug('controller');
-        \PMVC\option('set',[
+        option('set',[
            _ROUTER      => 'cli',
            _VIEW_ENGINE => $input->view,
            _RUN_APPS    => $parent
@@ -132,6 +130,7 @@ class PmvcGlobalCli
         }
         $plugins = getOption(_PLUGIN);
         if (!empty($plugins)) {
+            addPlugInFolders([getAppsParent().'plugins']);
             initPlugin($plugins);
             option('set', _PLUGIN, null);
         }
@@ -143,16 +142,15 @@ class PmvcGlobalCli
         }
     }
 
-
     public function parseParams()
     {
         $cmd = plug('cli');
         $params = $cmd->getopt();
         $cook = (object)[
-            'index'  =>\PMVC\value($params,['i'],'index_cli'),
-            'view'   =>\PMVC\value($params,['v'],'cli'),
-            'trace'  =>(bool)\PMVC\value($params,['t'],false),
-            'welcome'=>(bool)\PMVC\value($params,['w'],true),
+            'index'  =>value($params,['i'],'index_cli'),
+            'view'   =>value($params,['v'],'cli'),
+            'trace'  =>(bool)value($params,['t'],false),
+            'welcome'=>(bool)value($params,['w'],true),
         ];
         return $cook;
     }
