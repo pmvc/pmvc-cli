@@ -128,10 +128,12 @@ class PmvcGlobalCli
         if (realpath($cliEnv)) {
             plug('dotenv')->toPMVC($cliEnv);
         }
-        $plugins = getOption(_PLUGIN);
-        if (!empty($plugins)) {
+        $pluginKey = getOption(_PLUGIN);
+        if (!empty($pluginKey)) {
+            $plugins = getOption($pluginKey, []);
             addPlugInFolders([getAppsParent().'plugins']);
             initPlugin($plugins);
+            option('set', $pluginKey, null);
             option('set', _PLUGIN, null);
         }
         if ($input->welcome) {
