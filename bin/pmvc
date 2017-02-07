@@ -132,9 +132,7 @@ class PmvcGlobalCli
         if (!empty($pluginKey)) {
             $plugins = getOption($pluginKey, []);
             addPlugInFolders([getAppsParent().'plugins']);
-            initPlugin($plugins);
-            option('set', $pluginKey, null);
-            option('set', _PLUGIN, null);
+            initPlugin(\PMVC\get($plugins, 'INIT', []));
         }
         if ($input->welcome) {
             $this->welcome();
