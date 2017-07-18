@@ -6,12 +6,12 @@ namespace PMVC;
 ini_set("error_reporting", E_ALL);
 ini_set("display_errors", true);
 ini_set("display_startup_errors", true);
-$cli = new PmvcGlobalCli();
+$cli = new PMVC_GLOBAL_CLI();
 if ($cli->checkDependency()) {
     $cli->init();
 }
 
-class PmvcGlobalCli
+class PMVC_GLOBAL_CLI
 {
     private $dir;
     private $dotenv;
@@ -115,7 +115,10 @@ class PmvcGlobalCli
         $parent = str_replace(['..','.'],[$dir,$dir],$parent);
         $input = $this->parseParams();
         if ($input->trace) {
-            plug('debug_cli')['level']='trace';
+            if (is_bool($input->trace)) {
+                $input->trace = 'trace';
+            }
+            plug('debug')['level']=$input->trace;
         }
 
         $controller = plug('controller');
@@ -147,10 +150,10 @@ class PmvcGlobalCli
         $cmd = plug('cli');
         $params = $cmd->getopt();
         $cook = (object)[
-            'index'  =>value($params,['i'],'index_cli'),
-            'view'   =>value($params,['v'],'cli'),
-            'trace'  =>(bool)value($params,['t'],false),
-            'welcome'=>(bool)value($params,['w'],true),
+            'index'  =>get($params, 'i', 'index_cli'),
+            'view'   =>get($params, 'v', 'cli'),
+            'trace'  =>get($params, 't', false),
+            'welcome'=>(bool)get($params, 'w', true),
         ];
         return $cook;
     }
