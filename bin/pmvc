@@ -80,9 +80,9 @@ class PMVC_GLOBAL_CLI
         }
         initPlugin($plugs);
         $optionPlugin = [
+            'debug'=>['output'=>'debug_cli'],
             'dev'=>null,
             'error'=>null,
-            'debug'=>['output'=>'debug_cli'],
         ];
         $init = initPlugin($optionPlugin,true);
         foreach($init as $k=>$plug){

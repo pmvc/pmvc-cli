@@ -19,18 +19,19 @@ pmvc [app name]:[action name]
 ## Require / Need install following pakaging by yourself
 These packages controll by each project and not instlled as global, need install by yourself.
 ```
-        "pmvc-plugin/cli"             : "*",
-        "pmvc-plugin/controller"      : "*",
-        "pmvc-plugin/default_forward" : "*",
-        "pmvc-plugin/dispatcher"      : "*" 
+  "pmvc-plugin/cli"             : "*",
+  "pmvc-plugin/controller"      : "*",
+  "pmvc-plugin/default_forward" : "*",
+  "pmvc-plugin/dispatcher"      : "*", 
+  "pmvc-plugin/dotenv"          : "*"
 ```
 
 ## Suggests to install.
 ```
-  "pmvc-plugin/error",
   "pmvc-plugin/debug",
   "pmvc-plugin/debug_cli",
-  "pmvc-plugin/dotenv"
+  "pmvc-plugin/dev",
+  "pmvc-plugin/error",
 ```
 
 ## Install with Composer
