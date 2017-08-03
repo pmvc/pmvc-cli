@@ -118,7 +118,7 @@ class PMVC_GLOBAL_CLI
             if (is_bool($input->trace)) {
                 $input->trace = 'trace';
             }
-            plug('debug')['level']=$input->trace;
+            plug('debug')->setLevel($input->trace);
         }
 
         $controller = plug('controller');
