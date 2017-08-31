@@ -106,7 +106,7 @@ class PMVC_GLOBAL_CLI
          * Dot Env
          */
         $dir = realpath($this->dir);
-        $dotenv = $dir.'/.env';
+        $dotenv = $dir.'/.env.pmvc';
         if (realpath($dotenv)) {
             $this->dotenv = $dotenv;
             plug('dotenv', ['envFile'=>$dotenv]);
@@ -119,6 +119,9 @@ class PMVC_GLOBAL_CLI
                 $input->trace = 'trace';
             }
             plug('debug')->setLevel($input->trace);
+        }
+        if ($input->template) {
+            option('set', _TEMPLATE_DIR, $input->template);
         }
 
         $controller = plug('controller');
@@ -150,10 +153,11 @@ class PMVC_GLOBAL_CLI
         $cmd = plug('cli');
         $params = $cmd->getopt();
         $cook = (object)[
-            'index'  =>get($params, 'i', 'index_cli'),
-            'view'   =>get($params, 'v', 'cli'),
-            'trace'  =>get($params, 't', false),
-            'welcome'=>(bool)get($params, 'w', true),
+            'index'   =>get($params, 'i', 'index_cli'),
+            'view'    =>get($params, 'v', 'cli'),
+            'trace'   =>get($params, 't', false),
+            'template'=>get($params, 'tpl'),
+            'welcome' =>(bool)get($params, 'w', true),
         ];
         return $cook;
     }
