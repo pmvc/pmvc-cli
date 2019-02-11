@@ -137,7 +137,6 @@ class PMVC_GLOBAL_CLI
         $pluginKey = getOption(_PLUGIN);
         if (!empty($pluginKey)) {
             $plugins = getOption($pluginKey, []);
-            addPlugInFolders([$controller->get_apps_parent().'plugins']);
             initPlugin(\PMVC\get($plugins, 'INIT', []));
         }
         if ($input->welcome) {
