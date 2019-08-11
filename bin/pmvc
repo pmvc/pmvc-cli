@@ -156,7 +156,7 @@ class PMVC_GLOBAL_CLI
             'view'    =>get($params, 'v', 'cli'),
             'trace'   =>get($params, 't', false),
             'template'=>get($params, 'tpl'),
-            'welcome' =>(bool)get($params, 'w', true),
+            'welcome' =>!((bool)get($params, 'q', false)),
         ];
         return $cook;
     }
