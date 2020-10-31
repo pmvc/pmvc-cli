@@ -120,7 +120,7 @@ class PMVC_GLOBAL_CLI
             }
             plug('debug')->setLevel($input->trace);
         } elseif ($input->help) {
-            plug('debug')->setLevel('help');
+            plug('debug')->setLevel('help,'.$input->help);
             return;
         }
         if ($input->template) {
