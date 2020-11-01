@@ -163,7 +163,7 @@ class PMVC_GLOBAL_CLI
         $cmd = plug('cli');
         $params = $cmd->getopt();
         $cook = (object)[
-            'help'    =>get($params, 'help', false),
+            'help'    =>get($params, 'help', get($params, 'h', false)),
             'index'   =>get($params, 'i', 'index_cli'),
             'view'    =>get($params, 'v', 'cli'),
             'trace'   =>get($params, 't', false),
