@@ -150,11 +150,13 @@ class PMVC_GLOBAL_CLI
             $plugins = getOption($pluginKey, []);
             initPlugin(\PMVC\get($plugins, 'INIT', []));
         }
-        if ($input->welcome && !$input->help) {
-            $this->welcome();
-        }
-        if ($controller->plugApp([], [], $input->index)){
-            $controller->process();
+        if (!$input->help) {
+          if ($input->welcome) {
+              $this->welcome();
+          }
+          if ($controller->plugApp([], [], $input->index)){
+              $controller->process();
+          }
         }
     }
 
