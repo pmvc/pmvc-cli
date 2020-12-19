@@ -14,7 +14,7 @@ if ($cli->checkDependency()) {
 class PMVC_GLOBAL_CLI
 {
     private $dir;
-    private $dotenv;
+    private $dotenv = [];
 
     public function checkDependency()
     {
@@ -108,7 +108,7 @@ class PMVC_GLOBAL_CLI
         $dir = realpath($this->dir);
         $dotenv = $dir.'/.env.pmvc';
         if (realpath($dotenv)) {
-            $this->dotenv = $dotenv;
+            $this->dotenv[] = $dotenv;
             plug('dotenv', ['envFile'=>$dotenv]);
         }
         $parent = getOption(_RUN_APPS);
@@ -143,6 +143,7 @@ class PMVC_GLOBAL_CLI
         ]);
         $cliEnv = $dir.'/.env.cli';
         if (realpath($cliEnv)) {
+            $this->dotenv[] = $cliEnv;
             plug('dotenv')->toPMVC($cliEnv);
         }
         $pluginKey = getOption(_PLUGIN);
@@ -178,6 +179,6 @@ class PMVC_GLOBAL_CLI
     public function welcome()
     {
         $this->dump('Workplace: '.$this->dir);
-        $this->dump('DotEnv: '.$this->dotenv);
+        $this->dump('DotEnv: '.implode(', ', $this->dotenv));
     }
 }
