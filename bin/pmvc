@@ -106,15 +106,15 @@ class PMVC_GLOBAL_CLI
          * Dot Env
          */
         $dir = realpath($this->dir);
-        $dotenv = $dir.'/.env.pmvc';
-        if (realpath($dotenv)) {
-            $this->dotenv[] = $dotenv;
-            plug('dotenv', ['envFile'=>$dotenv]);
-        }
         $cliEnv = $dir.'/.env.cli';
         if (realpath($cliEnv)) {
             $this->dotenv[] = $cliEnv;
             plug('dotenv')->toPMVC($cliEnv);
+        }
+        $dotenv = $dir.'/.env.pmvc';
+        if (realpath($dotenv)) {
+            $this->dotenv[] = $dotenv;
+            plug('dotenv', ['envFile'=>$dotenv]);
         }
         $parent = getOption(_RUN_APPS);
         $parent = str_replace(['..','.'],[$dir,$dir],$parent);
