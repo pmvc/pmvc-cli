@@ -23,7 +23,7 @@ class PMVC_GLOBAL_CLI
         $this->initPlugin();
     }
 
-    public function findAutoload()
+    private function findAutoload()
     {
         $dir = realpath('./');
         $file = $dir.'/vendor/autoload.php';
@@ -47,7 +47,7 @@ class PMVC_GLOBAL_CLI
         }
     }
 
-    public function hasPMVC()
+    private function hasPMVC()
     {
         if (class_exists(__NAMESPACE__.'\Load')) {
             return true;
@@ -59,7 +59,7 @@ class PMVC_GLOBAL_CLI
         }
     }
 
-    public function initPlugin()
+    private function initPlugin()
     {
         Load::plug();
         $plugs = [
@@ -94,10 +94,55 @@ class PMVC_GLOBAL_CLI
         return true;
     }
 
-    public function dump($s)
+    private function dump($s)
     {
         $cmd = plug('cli');
         $cmd->dump($s);
+    }
+
+    private function parseParams()
+    {
+        $cmd = plug('cli');
+        $params = $cmd->getopt();
+        $cook = (object)[
+            'help'    =>get($params, 'help', get($params, 'h', false)),
+            'index'   =>get($params, 'i', 'index_cli'),
+            'view'    =>get($params, 'v', 'cli'),
+            'trace'   =>get($params, 't', false),
+            'template'=>get($params, 'tpl'),
+            'welcome' =>!((bool)get($params, 'q', false)),
+        ];
+        return $cook;
+    }
+
+    private function welcome()
+    {
+        $this->dump('Workplace: '.$this->dir);
+        $this->dump('DotEnv: '.implode(', ', $this->dotenv));
+    }
+
+    private function handleInput($input)
+    {
+        $pDebug = plug('debug');
+        if ($input->trace) {
+            if (is_numeric($input->trace)) {
+                $pDebug['traceLength'] = $input->trace;
+                $input->trace = 'trace';
+            }
+            if (is_bool($input->trace)) {
+                $input->trace = 'trace';
+            }
+            $pDebug->setLevel($input->trace);
+        }
+        if ($input->help) {
+            if (!$input->trace || $input->trace === 'trace') {
+              $merge = array_diff(['help', $input->help, $input->trace], [false, '', null, true]);
+              $pDebug->setLevel(join(',',$merge));
+            }
+        }
+        if ($input->template) {
+            option('set', _TEMPLATE_DIR, $input->template);
+        }
     }
 
     public function init()
@@ -124,26 +169,7 @@ class PMVC_GLOBAL_CLI
         $parent = getOption(_RUN_APPS);
         $parent = str_replace(['..','.'],[$dir,$dir],$parent);
         $input = $this->parseParams();
-        $pDebug = plug('debug');
-        if ($input->trace) {
-            if (is_numeric($input->trace)) {
-                $pDebug['traceLength'] = $input->trace;
-                $input->trace = 'trace';
-            }
-            if (is_bool($input->trace)) {
-                $input->trace = 'trace';
-            }
-            $pDebug->setLevel($input->trace);
-        }
-        if ($input->help) {
-            if (!$input->trace || $input->trace === 'trace') {
-              $merge = array_diff(['help', $input->help, $input->trace], [false, '', null, true]);
-              $pDebug->setLevel(join(',',$merge));
-            }
-        }
-        if ($input->template) {
-            option('set', _TEMPLATE_DIR, $input->template);
-        }
+        $this->handleInput($input);
 
         $controller = plug('controller');
         option('set',[
@@ -161,29 +187,13 @@ class PMVC_GLOBAL_CLI
               $this->welcome();
           }
           if ($controller->plugApp([], [], $input->index)){
-              $controller->process();
+              if ($input->index === 'worker') {
+                $controller->processWorker();
+              } else {
+                $controller->process();
+              }
           }
         }
     }
 
-    public function parseParams()
-    {
-        $cmd = plug('cli');
-        $params = $cmd->getopt();
-        $cook = (object)[
-            'help'    =>get($params, 'help', get($params, 'h', false)),
-            'index'   =>get($params, 'i', 'index_cli'),
-            'view'    =>get($params, 'v', 'cli'),
-            'trace'   =>get($params, 't', false),
-            'template'=>get($params, 'tpl'),
-            'welcome' =>!((bool)get($params, 'q', false)),
-        ];
-        return $cook;
-    }
-
-    public function welcome()
-    {
-        $this->dump('Workplace: '.$this->dir);
-        $this->dump('DotEnv: '.implode(', ', $this->dotenv));
-    }
 }
