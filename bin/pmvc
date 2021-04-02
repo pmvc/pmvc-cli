@@ -1,11 +1,10 @@
 #!/usr/bin/env php
-<?php
-namespace PMVC;
+<?php namespace PMVC;
 
 # debug
-ini_set("error_reporting", E_ALL);
-ini_set("display_errors", true);
-ini_set("display_startup_errors", true);
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', true);
+ini_set('display_startup_errors', true);
 $cli = new PMVC_GLOBAL_CLI();
 if ($cli->checkDependency()) {
     $cli->init();
@@ -18,42 +17,37 @@ class PMVC_GLOBAL_CLI
 
     public function checkDependency()
     {
-       return $this->findAutoload() &&
-        $this->hasPMVC() && 
-        $this->initPlugin();
+        return $this->findAutoload() && $this->hasPMVC() && $this->initPlugin();
     }
 
     private function findAutoload()
     {
         $dir = realpath('./');
-        $file = $dir.'/vendor/autoload.php';
+        $file = $dir . '/vendor/autoload.php';
         if (!is_file($file)) {
-            $dirs = explode('/',$dir);
-            while(!is_file($file)&&count($dirs)){
+            $dirs = explode('/', $dir);
+            while (!is_file($file) && count($dirs)) {
                 array_pop($dirs);
-                $dir = join('/',$dirs);
-                $file = $dir.'/vendor/autoload.php';
+                $dir = join('/', $dirs);
+                $file = $dir . '/vendor/autoload.php';
             }
         }
         if (is_file($file)) {
-            include($file);
+            include $file;
             $this->dir = $dir;
             return true;
         } else {
-            return !trigger_error(
-                'Can\'t find autoload file.',
-                E_USER_ERROR
-            );
+            return !trigger_error('Can\'t find autoload file.', E_USER_ERROR);
         }
     }
 
     private function hasPMVC()
     {
-        if (class_exists(__NAMESPACE__.'\Load')) {
+        if (class_exists(__NAMESPACE__ . '\Load')) {
             return true;
         } else {
             return !trigger_error(
-                'Can\'t find PMVC core library.',
+                'You need install PMVC core library in app level.',
                 E_USER_ERROR
             );
         }
@@ -63,29 +57,29 @@ class PMVC_GLOBAL_CLI
     {
         Load::plug();
         $plugs = [
-            'controller'=>null,
-            'dispatcher'=>null,
-            'default_forward'=>null,
-            'cli'=>null,
+            'controller' => null,
+            'dispatcher' => null,
+            'default_forward' => null,
+            'cli' => null,
         ];
-        addPlugInFolders([__DIR__.'/../../../pmvc-plugin']);
-        $init = initPlugin($plugs,true);
-        foreach($init as $k=>$plug){
+        addPlugInFolders([__DIR__ . '/../../../pmvc-plugin']);
+        $init = initPlugin($plugs, true);
+        foreach ($init as $k => $plug) {
             if (!$plug) {
                 return !trigger_error(
-                    '[Plugin: '.$k.'] not installed.',
+                    '[Plugin: ' . $k . '] not installed.',
                     E_USER_ERROR
                 );
             }
         }
         initPlugin($plugs);
         $optionPlugin = [
-            'debug'=>['output'=>'debug_cli'],
-            'dev'=>null,
-            'error'=>null,
+            'debug' => ['output' => 'debug_cli'],
+            'dev' => null,
+            'error' => null,
         ];
-        $init = initPlugin($optionPlugin,true);
-        foreach($init as $k=>$plug){
+        $init = initPlugin($optionPlugin, true);
+        foreach ($init as $k => $plug) {
             if (!$plug) {
                 unset($optionPlugin[$k]);
             }
@@ -104,21 +98,21 @@ class PMVC_GLOBAL_CLI
     {
         $cmd = plug('cli');
         $params = $cmd->getopt();
-        $cook = (object)[
-            'help'    =>get($params, 'help', get($params, 'h', false)),
-            'index'   =>get($params, 'i', 'index_cli'),
-            'view'    =>get($params, 'v', 'cli'),
-            'trace'   =>get($params, 't', false),
-            'template'=>get($params, 'tpl'),
-            'welcome' =>!((bool)get($params, 'q', false)),
+        $cook = (object) [
+            'help' => get($params, 'help', get($params, 'h', false)),
+            'index' => get($params, 'i', 'index_cli'),
+            'view' => get($params, 'v', 'cli'),
+            'trace' => get($params, 't', false),
+            'template' => get($params, 'tpl'),
+            'welcome' => !((bool) get($params, 'q', false)),
         ];
         return $cook;
     }
 
     private function welcome()
     {
-        $this->dump('Workplace: '.$this->dir);
-        $this->dump('DotEnv: '.implode(', ', $this->dotenv));
+        $this->dump('Workplace: ' . $this->dir);
+        $this->dump('DotEnv: ' . implode(', ', $this->dotenv));
     }
 
     private function handleInput($input)
@@ -136,8 +130,11 @@ class PMVC_GLOBAL_CLI
         }
         if ($input->help) {
             if (!$input->trace || $input->trace === 'trace') {
-              $merge = array_diff(['help', $input->help, $input->trace], [false, '', null, true]);
-              $pDebug->setLevel(join(',',$merge));
+                $merge = array_diff(
+                    ['help', $input->help, $input->trace],
+                    [false, '', null, true]
+                );
+                $pDebug->setLevel(join(',', $merge));
             }
         }
         if ($input->template) {
@@ -151,31 +148,31 @@ class PMVC_GLOBAL_CLI
          * Dot Env
          */
         $dir = realpath($this->dir);
-        $cliEnv = $dir.'/.env.cli';
+        $cliEnv = $dir . '/.env.cli';
         if (realpath($cliEnv)) {
             $this->dotenv[] = $cliEnv;
         }
-        $dotenv = $dir.'/.env.pmvc';
+        $dotenv = $dir . '/.env.pmvc';
         if (realpath($dotenv)) {
             $this->dotenv[] = $dotenv;
         }
         if (count($this->dotenv)) {
-          $dotenv = plug('dotenv');
-          foreach($this->dotenv as $envfile) {
-            $dotenv->toPMVC($envfile);
-          }
+            $dotenv = plug('dotenv');
+            foreach ($this->dotenv as $envfile) {
+                $dotenv->toPMVC($envfile);
+            }
         }
 
         $parent = getOption(_RUN_APPS);
-        $parent = str_replace(['..','.'],[$dir,$dir],$parent);
+        $parent = str_replace(['..', '.'], [$dir, $dir], $parent);
         $input = $this->parseParams();
         $this->handleInput($input);
 
         $controller = plug('controller');
-        option('set',[
-           _ROUTER      => 'cli',
-           _VIEW_ENGINE => $input->view,
-           _RUN_APPS    => $parent
+        option('set', [
+            _ROUTER => 'cli',
+            _VIEW_ENGINE => $input->view,
+            _RUN_APPS => $parent,
         ]);
         $pluginKey = getOption(_PLUGIN);
         if (!empty($pluginKey)) {
@@ -183,17 +180,16 @@ class PMVC_GLOBAL_CLI
             initPlugin(\PMVC\get($plugins, 'INIT', []));
         }
         if (!$input->help) {
-          if ($input->welcome) {
-              $this->welcome();
-          }
-          if ($controller->plugApp([], [], $input->index)){
-              if ($input->index === 'worker') {
-                $controller->processWorker();
-              } else {
-                $controller->process();
-              }
-          }
+            if ($input->welcome) {
+                $this->welcome();
+            }
+            if ($controller->plugApp([], [], $input->index)) {
+                if ($input->index === 'worker') {
+                    $controller->processWorker();
+                } else {
+                    $controller->process();
+                }
+            }
         }
     }
-
 }
