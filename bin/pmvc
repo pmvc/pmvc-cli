@@ -24,12 +24,14 @@ class PMVC_GLOBAL_CLI
     {
         $dir = realpath('./');
         $file = $dir . '/vendor/autoload.php';
+        $tryFiles = [$file];
         if (!is_file($file)) {
             $dirs = explode('/', $dir);
-            while (!is_file($file) && count($dirs)) {
+            while (!is_file($file) && count($dirs) > 1) {
                 array_pop($dirs);
                 $dir = join('/', $dirs);
                 $file = $dir . '/vendor/autoload.php';
+                $tryFiles[] = $file;
             }
         }
         if (is_file($file)) {
@@ -37,7 +39,10 @@ class PMVC_GLOBAL_CLI
             $this->dir = $dir;
             return true;
         } else {
-            return !trigger_error('Can\'t find autoload file.', E_USER_ERROR);
+            return !trigger_error(
+                'Can\'t find autoload file. ' . print_r($tryFiles, true),
+                E_USER_ERROR
+            );
         }
     }
 
