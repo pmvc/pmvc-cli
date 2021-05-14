@@ -147,7 +147,7 @@ class PMVC_GLOBAL_CLI
         }
     }
 
-    public function init()
+    private function _initDotEnv()
     {
         /**
          * Dot Env
@@ -167,7 +167,11 @@ class PMVC_GLOBAL_CLI
                 $dotenv->toPMVC($envfile);
             }
         }
+    }
 
+    public function init()
+    {
+        $this->_initDotEnv();
         $parent = getOption(_RUN_APPS);
         $parent = str_replace(['..', '.'], [$dir, $dir], $parent);
         $input = $this->parseParams();
