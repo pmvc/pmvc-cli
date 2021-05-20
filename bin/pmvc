@@ -171,9 +171,9 @@ class PMVC_GLOBAL_CLI
         if (!empty($pluginKey)) {
             $plugins = getOption($pluginKey, []);
             $initPlugInArr = \PMVC\get($plugins, 'INIT', []);
-            foreach ($initPlugInArr as $k=>$v) {
-                $plugV = \PMVC\get($plugins, $k);
-                $initPlugInArr[$k] = empty($plugV) ? null : $plugV;
+            foreach ($initPlugInArr as $plugName) {
+                $plugV = \PMVC\get($plugins, $plugName);
+                $initPlugInArr[$plugName] = empty($plugV) ? null : $plugV;
             } 
             initPlugin($initPlugInArr);
         }
