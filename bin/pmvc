@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php namespace PMVC;
 
+use Exception;
+
 # debug
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', true);
@@ -14,6 +16,7 @@ class PMVC_GLOBAL_CLI
 {
     private $dir;
     private $dotenv = [];
+    private $_autoload;
 
     public function checkDependency()
     {
@@ -35,6 +38,7 @@ class PMVC_GLOBAL_CLI
             }
         }
         if (is_file($file)) {
+            $this->_autoload = $file;
             include $file;
             $this->dir = $dir;
             return true;
@@ -98,6 +102,27 @@ class PMVC_GLOBAL_CLI
         $cmd->dump($s);
     }
 
+    private function getDefaultTestRunner()
+    {
+        $dir = realpath('./');
+        $unitConfigFile = $dir. '/phpunit.xml';
+        if (is_file($unitConfigFile)) {
+            return 'phpunit';
+        }
+        $testDir = $dir . '/tests/';
+        $inc = $testDir . 'include.php';
+        $opt = ['--prepend ' . $this->_autoload];
+        if (is_file($inc)) {
+            $opt[] = '--bootstrap ' . $inc;
+        }
+        if (is_dir($testDir)) {
+            $opt[] = $testDir;
+        } else {
+            throw new Exception('Not found tests.');
+        }
+        return 'phpunit ' . join(' ', $opt);
+    }
+
     private function parseParams()
     {
         $cmd = plug('cli');
@@ -109,7 +134,7 @@ class PMVC_GLOBAL_CLI
             'trace' => get($params, 't', false),
             'template' => get($params, 'tpl'),
             'welcome' => !((bool) get($params, 'q', false)),
-            'phpunit' => get($params, 'unit', 'phpunit'),
+            'unit' => get($params, 'unit', $this->getDefaultTestRunner()),
         ];
         return $cook;
     }
@@ -194,8 +219,7 @@ class PMVC_GLOBAL_CLI
                 $this->welcome();
             }
             if ($input->index === 'test') {
-                plug('unit');
-                shell_exec($input->unit);
+                system($input->unit);
             } else {
                 option('set', [
                     _ROUTER => 'cli',
