@@ -62,7 +62,6 @@ class PMVC_GLOBAL_CLI
     {
         Load::plug();
         $plugs = [
-            'controller' => null,
             'dispatcher' => null,
             'default_forward' => null,
             'cli' => null,
@@ -105,11 +104,12 @@ class PMVC_GLOBAL_CLI
         $params = $cmd->getopt();
         $cook = (object) [
             'help' => get($params, 'help', get($params, 'h', false)),
-            'index' => get($params, 'i', 'index_cli'),
+            'index' => get($params, 'run', get($params, 'r', 'index_cli')),
             'view' => get($params, 'v', 'cli'),
             'trace' => get($params, 't', false),
             'template' => get($params, 'tpl'),
             'welcome' => !((bool) get($params, 'q', false)),
+            'phpunit' => get($params, 'unit', 'phpunit'),
         ];
         return $cook;
     }
@@ -171,11 +171,11 @@ class PMVC_GLOBAL_CLI
         if (!empty($pluginKey)) {
             $plugins = getOption($pluginKey, []);
             $initPlugNames = \PMVC\get($plugins, 'INIT', []);
-            $initPlugInArr=[];
+            $initPlugInArr = [];
             foreach ($initPlugNames as $plugName) {
                 $plugV = \PMVC\get($plugins, $plugName);
                 $initPlugInArr[$plugName] = empty($plugV) ? null : $plugV;
-            } 
+            }
             initPlugin($initPlugInArr);
         }
         return $dir;
@@ -189,21 +189,26 @@ class PMVC_GLOBAL_CLI
         $input = $this->parseParams();
         $this->handleInput($input);
 
-        $controller = plug('controller');
-        option('set', [
-            _ROUTER => 'cli',
-            _VIEW_ENGINE => $input->view,
-            _RUN_APPS => $parent,
-        ]);
         if (!$input->help) {
             if ($input->welcome) {
                 $this->welcome();
             }
-            if ($controller->plugApp([], [], $input->index)) {
-                if ($input->index === 'worker') {
-                    $controller->processWorker();
-                } else {
-                    $controller->process();
+            if ($input->index === 'test') {
+                plug('unit');
+                shell_exec($input->unit);
+            } else {
+                option('set', [
+                    _ROUTER => 'cli',
+                    _VIEW_ENGINE => $input->view,
+                    _RUN_APPS => $parent,
+                ]);
+                $controller = plug('controller');
+                if ($controller->plugApp([], [], $input->index)) {
+                    if ($input->index === 'worker') {
+                        $controller->processWorker();
+                    } else {
+                        $controller->process();
+                    }
                 }
             }
         }

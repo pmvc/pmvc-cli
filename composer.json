@@ -1,19 +1,19 @@
 {
-    "name": "pmvc/pmvc-cli",
-    "description": "PMVC Global command-line, type \"pmvc xxx\" in your project folder",
-    "type": "library",
-    "keywords": ["cli", "pmvc"],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Hill",
-            "email": "hill@kimo.com"
-        }
-    ],
-    "require-dev": {
-        "pmvc/pmvc": "*",
-        "pmvc-plugin/unit": "*"
-    },
-    "bin": ["bin/pmvc"],
-    "minimum-stability": "dev"
+  "name": "pmvc/pmvc-cli",
+  "description": "PMVC Global command-line, type \"pmvc xxx\" in your project folder",
+  "type": "library",
+  "keywords": ["cli", "pmvc"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Hill",
+      "email": "hill@kimo.com"
+    }
+  ],
+  "require-dev": {
+    "pmvc/pmvc": "*",
+    "pmvc-plugin/unit": "*"
+  },
+  "bin": ["bin/pmvc"],
+  "minimum-stability": "dev"
 }
