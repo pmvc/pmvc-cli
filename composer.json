@@ -11,7 +11,8 @@
         }
     ],
     "require-dev": {
-        "pmvc/pmvc": "*"
+        "pmvc/pmvc": "*",
+        "pmvc-plugin/unit": "*"
     },
     "bin": ["bin/pmvc"],
     "minimum-stability": "dev"
