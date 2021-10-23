@@ -17,6 +17,7 @@ class PMVC_GLOBAL_CLI
     private $dir;
     private $dotenv = [];
     private $_autoload;
+    private $_units;
 
     public function checkDependency()
     {
@@ -102,25 +103,57 @@ class PMVC_GLOBAL_CLI
         $cmd->dump($s);
     }
 
-    private function getDefaultTestRunner()
+    private function _glob($folder, $pattern)
     {
-        $dir = realpath('./');
-        $unitConfigFile = $dir. '/phpunit.xml';
-        if (is_file($unitConfigFile)) {
-            return 'phpunit';
+        $dir = glob($folder . '/*', GLOB_ONLYDIR);
+        $fileList = [];
+        foreach ($dir as $d) {
+            if (fnmatch($pattern, $d)) {
+                $fileList[] = $d;
+            } else {
+                if (!is_link($d)) {
+                    if (
+                        !fnmatch('*/vendor', $d) &&
+                        !fnmatch('*/node_modules', $d) &&
+                        !fnmatch('*/dev', $d)
+                    ) {
+                        $other = $this->_glob($d, $pattern);
+                        if (count($other)) {
+                            $fileList = array_merge($fileList, $other);
+                        }
+                    }
+                }
+            }
         }
-        $testDir = $dir . '/tests/';
-        $inc = $testDir . 'include.php';
+        return $fileList;
+    }
+
+    private function genUnitCommand($testDir)
+    {
+        $inc = $testDir . '/include.php';
         $opt = ['--prepend ' . $this->_autoload];
         if (is_file($inc)) {
             $opt[] = '--bootstrap ' . $inc;
         }
-        if (is_dir($testDir)) {
-            $opt[] = $testDir;
-        } else {
-            throw new Exception('Not found tests.');
-        }
+        $opt[] = $testDir;
         return 'phpunit ' . join(' ', $opt);
+    }
+
+    private function getDefaultTestRunner()
+    {
+        $dir = realpath('./');
+        $testDir = $dir . '/tests';
+        $unitConfigFile = $dir . '/phpunit.xml';
+        if (is_file($unitConfigFile)) {
+            $this->_units = array_diff($this->_glob($dir, '*/tests'), [$testDir]);
+            return 'phpunit';
+        } else {
+            if (is_dir($testDir)) {
+                return $this->genUnitCommand($testDir);
+            } else {
+                throw new Exception('Not found tests.');
+            }
+        }
     }
 
     private function parseParams()
@@ -219,7 +252,15 @@ class PMVC_GLOBAL_CLI
                 $this->welcome();
             }
             if ($input->index === 'test') {
+                $this->dump($input->unit); 
                 system($input->unit);
+                if (is_array($this->_units) && count($this->_units)) {
+                    foreach($this->_units as $u) {
+                        $cmd = $this->genUnitCommand($u);
+                        $this->dump($cmd); 
+                        system($cmd);
+                    }
+                }
             } else {
                 option('set', [
                     _ROUTER => 'cli',
