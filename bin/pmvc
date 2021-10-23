@@ -145,7 +145,9 @@ class PMVC_GLOBAL_CLI
         $testDir = $dir . '/tests';
         $unitConfigFile = $dir . '/phpunit.xml';
         if (is_file($unitConfigFile)) {
-            $this->_units = array_diff($this->_glob($dir, '*/tests'), [$testDir]);
+            $this->_units = array_diff($this->_glob($dir, '*/tests'), [
+                $testDir,
+            ]);
             return 'phpunit';
         } else {
             if (is_dir($testDir)) {
@@ -248,20 +250,20 @@ class PMVC_GLOBAL_CLI
         $this->handleInput($input);
 
         if (!$input->help) {
-            if ($input->welcome) {
-                $this->welcome();
-            }
             if ($input->index === 'test') {
-                $this->dump($input->unit); 
+                $this->dump($input->unit);
                 system($input->unit);
                 if (is_array($this->_units) && count($this->_units)) {
-                    foreach($this->_units as $u) {
+                    foreach ($this->_units as $u) {
                         $cmd = $this->genUnitCommand($u);
-                        $this->dump($cmd); 
+                        $this->dump($cmd);
                         system($cmd);
                     }
                 }
             } else {
+                if ($input->welcome) {
+                    $this->welcome();
+                }
                 option('set', [
                     _ROUTER => 'cli',
                     _VIEW_ENGINE => $input->view,
