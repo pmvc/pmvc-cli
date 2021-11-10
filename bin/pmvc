@@ -82,18 +82,18 @@ class PMVC_GLOBAL_CLI
             }
         }
         initPlugin($plugs);
-        $optionPlugin = [
+        $optionalPlugin = [
             'debug' => ['output' => 'debug_cli'],
             'dev' => null,
             'error' => null,
         ];
-        $init = initPlugin($optionPlugin, true);
+        $init = initPlugin($optionalPlugin, true);
         foreach ($init as $k => $plug) {
             if (!$plug) {
-                unset($optionPlugin[$k]);
+                unset($optionalPlugin[$k]);
             }
         }
-        initPlugin($optionPlugin);
+        initPlugin($optionalPlugin);
         return true;
     }
 
