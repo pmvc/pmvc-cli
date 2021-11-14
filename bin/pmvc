@@ -136,7 +136,7 @@ class PMVC_GLOBAL_CLI
             $opt[] = '--bootstrap ' . $inc;
         }
         $opt[] = $testDir;
-        return 'phpunit ' . join(' ', $opt);
+        return '[PHPUNIT] ' . join(' ', $opt);
     }
 
     private function getDefaultTestRunner()
@@ -148,14 +148,21 @@ class PMVC_GLOBAL_CLI
             $this->_units = array_diff($this->_glob($dir, '*/tests'), [
                 $testDir,
             ]);
-            return 'phpunit';
+            return '[PHPUNIT]';
         } else {
             if (is_dir($testDir)) {
                 return $this->genUnitCommand($testDir);
             } else {
-                throw new Exception('Not found tests.');
+                throw new Exception('Not found [tests] folder.');
             }
         }
+    }
+
+    private function _runUnit($unitCmd, $bin)
+    {
+        $cmd = str_replace('[PHPUNIT]', $bin, $unitCmd);
+        $this->dump($cmd);
+        system($cmd);
     }
 
     private function parseParams()
@@ -169,7 +176,7 @@ class PMVC_GLOBAL_CLI
             'trace' => get($params, 't', false),
             'template' => get($params, 'tpl'),
             'welcome' => !((bool) get($params, 'q', false)),
-            'unit' => get($params, 'unit', $this->getDefaultTestRunner()),
+            'unit' => get($params, 'unit', 'phpunit'),
         ];
         return $cook;
     }
@@ -251,13 +258,12 @@ class PMVC_GLOBAL_CLI
 
         if (!$input->help) {
             if ($input->index === 'test') {
-                $this->dump($input->unit);
-                system($input->unit);
+                $unitCmd = $this->getDefaultTestRunner();
+                $this->_runUnit($unitCmd, $input->unit);
                 if (is_array($this->_units) && count($this->_units)) {
                     foreach ($this->_units as $u) {
-                        $cmd = $this->genUnitCommand($u);
-                        $this->dump($cmd);
-                        system($cmd);
+                        $unitCmd = $this->genUnitCommand($u);
+                        $this->_runUnit($unitCmd, $input->unit);
                     }
                 }
             } else {
