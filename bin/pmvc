@@ -252,7 +252,7 @@ class PMVC_GLOBAL_CLI
     {
         $dir = $this->_initDotEnv();
         $parent = getOption(_RUN_APPS);
-        $parent = str_replace(['..', '.'], [$dir, $dir], $parent);
+        $parent = str_replace(['..', '.'], [$dir, $dir], $parent || '');
         $input = $this->parseParams();
         $this->handleInput($input);
 

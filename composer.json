@@ -12,6 +12,10 @@
   ],
   "require-dev": {
     "pmvc/pmvc": "*",
+    "pmvc-plugin/debug": "*",
+    "pmvc-plugin/dispatcher": "*",
+    "pmvc-plugin/default_forward": "*",
+    "pmvc-plugin/cli": "*",
     "pmvc-plugin/unit": "*"
   },
   "bin": ["bin/pmvc"],
