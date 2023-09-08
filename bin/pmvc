@@ -24,8 +24,9 @@ class PMVC_GLOBAL_CLI
         return $this->findAutoLoad() && $this->hasPMVC() && $this->initPlugin();
     }
 
-    private function tryAutoLoad($file)
+    private function tryAutoLoad($dir)
     {
+        $file = $dir . '/vendor/autoload.php';
         $tryFiles = [$file];
         if (!is_file($file)) {
             $dirs = explode('/', $dir);
@@ -41,18 +42,15 @@ class PMVC_GLOBAL_CLI
 
     private function findAutoLoad()
     {
-        $dir = realpath('./');
-        $file = $dir . '/vendor/autoload.php';
+        $dirs = [realpath('./'), __DIR__];
         $tryFiles = [];
-        if (!is_file($file)) {
-            $tryResult = $this->tryAutoLoad($file);
+        foreach ($dirs as $dir) {
+            $tryResult = $this->tryAutoLoad($dir);
             $file = $tryResult[1];
             $tryFiles = array_merge($tryFiles, $tryResult[0]);
-        }
-        if (!is_file($file)) {
-            $tryResult = $this->tryAutoLoad(__DIR__);
-            $file = $tryResult[1];
-            $tryFiles = array_merge($tryFiles, $tryResult[0]);
+            if (is_file($file)) {
+                break;
+            }
         }
         if (is_file($file)) {
             $this->_autoload = $file;
