@@ -83,6 +83,7 @@ class PMVC_GLOBAL_CLI
         $plugs = [
             'dispatcher' => null,
             'default_forward' => null,
+            'debug' => ['output' => 'debug_cli'],
             'cli' => null,
         ];
         addPlugInFolders([__DIR__ . '/../../../pmvc-plugin']);
@@ -97,7 +98,6 @@ class PMVC_GLOBAL_CLI
         }
         initPlugin($plugs);
         $optionalPlugin = [
-            'debug' => ['output' => 'debug_cli'],
             'dev' => null,
             'error' => null,
         ];
