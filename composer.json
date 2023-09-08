@@ -3,7 +3,7 @@
   "description": "PMVC Global command-line, type \"pmvc xxx\" in your project folder",
   "type": "library",
   "keywords": ["cli", "pmvc"],
-  "license": "MIT",
+  "license": "ISC",
   "authors": [
     {
       "name": "Hill",
