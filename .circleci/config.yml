@@ -6,7 +6,7 @@ jobs:
       php-version:
         type: string
     docker:
-      - image: hillliu/pmvc-phpunit:<< parameters.php-version >>
+      - image: allfunc/pmvc-phpunit:<< parameters.php-version >>
     working_directory: /var/www/cli
     steps:
       - checkout
