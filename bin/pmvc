@@ -152,6 +152,8 @@ class PMVC_GLOBAL_CLI
     private function genUnitCommand($testDir)
     {
         $inc = $testDir . '/include.php';
+        // https://docs.phpunit.de/en/9.6/textui.html?highlight=--prepend
+        // https://docs.phpunit.de/en/10.3/textui.html
         $opt = ['--include-path ' . $this->_autoload];
         if (is_file($inc)) {
             $opt[] = '--bootstrap ' . $inc;
