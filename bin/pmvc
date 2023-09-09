@@ -152,7 +152,7 @@ class PMVC_GLOBAL_CLI
     private function genUnitCommand($testDir)
     {
         $inc = $testDir . '/include.php';
-        $opt = ['--prepend ' . $this->_autoload];
+        $opt = ['--include-path ' . $this->_autoload];
         if (is_file($inc)) {
             $opt[] = '--bootstrap ' . $inc;
         }
