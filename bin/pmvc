@@ -3,6 +3,9 @@
 
 use Exception;
 
+define('SELF_INDEX', !empty($argv[1]) ? $argv[1] : "");
+const AUTOLOAD_PATH = '/vendor/autoload.php';
+
 # debug
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', true);
@@ -26,14 +29,14 @@ class PMVC_GLOBAL_CLI
 
     private function tryAutoLoad($dir)
     {
-        $file = $dir . '/vendor/autoload.php';
+        $file = $dir . AUTOLOAD_PATH;
         $tryFiles = [$file];
         if (!is_file($file)) {
             $dirs = explode('/', $dir);
             while (!is_file($file) && count($dirs) > 1) {
                 array_pop($dirs);
                 $dir = join('/', $dirs);
-                $file = $dir . '/vendor/autoload.php';
+                $file = $dir . AUTOLOAD_PATH;
                 $tryFiles[] = $file;
             }
         }
@@ -42,20 +45,24 @@ class PMVC_GLOBAL_CLI
 
     private function findAutoLoad()
     {
-        $dirs = [realpath('./'), __DIR__];
-        $tryFiles = [];
-        foreach ($dirs as $dir) {
-            $tryResult = $this->tryAutoLoad($dir);
-            $file = $tryResult[1];
-            $tryFiles = array_merge($tryFiles, $tryResult[0]);
-            if (is_file($file)) {
-                break;
+        if (SELF_INDEX === 'test' && is_file(AUTOLOAD_PATH)) {
+            $file = AUTOLOAD_PATH;
+        } else {
+            $dirs = [realpath('./'), __DIR__];
+            $tryFiles = [];
+            foreach ($dirs as $dir) {
+                $tryResult = $this->tryAutoLoad($dir);
+                $file = $tryResult[1];
+                $tryFiles = array_merge($tryFiles, $tryResult[0]);
+                if (is_file($file)) {
+                    break;
+                }
             }
         }
         if (is_file($file)) {
             $this->_autoload = $file;
             include $file;
-            $this->dir = $dir;
+            $this->dir = dirname($file);
             return true;
         } else {
             return !trigger_error(
@@ -192,6 +199,9 @@ class PMVC_GLOBAL_CLI
             'welcome' => !((bool) get($params, 'q', false)),
             'unit' => get($params, 'unit', 'phpunit'),
         ];
+        if (SELF_INDEX === 'test') {
+          $cook->index = SELF_INDEX;
+        }
         return $cook;
     }
 

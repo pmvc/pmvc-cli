@@ -7,8 +7,6 @@
   bootstrap="tests/include.php"
   processIsolation="false"
   stopOnFailure="false"
-  cacheDirectory=".phpunit.cache"
-  backupStaticProperties="false"
 >
   <testsuites>
     <testsuite name="Application Test Suite">
