@@ -13,6 +13,6 @@ class PMVCCliTest extends TestCase
     {
         exec('php ' . __DIR__ . '/../bin/pmvc 2>/dev/null', $output);
         // fwrite(STDERR, print_r($output, true));
-        $this->haveString('Workplace', $output[0]);
+        $this->haveString('Workplace', implode("\n", $output));
     }
 }

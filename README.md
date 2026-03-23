@@ -1,6 +1,6 @@
 [![Latest Stable Version](https://poser.pugx.org/pmvc/pmvc-cli/v/stable)](https://packagist.org/packages/pmvc/pmvc-cli) 
 [![Latest Unstable Version](https://poser.pugx.org/pmvc/pmvc-cli/v/unstable)](https://packagist.org/packages/pmvc/pmvc-cli) 
-[![CircleCI](https://circleci.com/gh/pmvc/pmvc-cli/tree/master.svg?style=svg)](https://circleci.com/gh/pmvc/pmvc-cli/tree/master)
+[![CircleCI](https://circleci.com/gh/pmvc/pmvc-cli/tree/main.svg?style=svg)](https://circleci.com/gh/pmvc/pmvc-cli/tree/main)
 [![License](https://poser.pugx.org/pmvc/pmvc-cli/license)](https://packagist.org/packages/pmvc/pmvc-cli)
 [![Total Downloads](https://poser.pugx.org/pmvc/pmvc-cli/downloads)](https://packagist.org/packages/pmvc/pmvc-cli) 
 
@@ -45,7 +45,7 @@ These packages controll by each project and not instlled as global, need install
 ```
 {
     "require": {
-        "pmvc/pmvc-cli": "dev-master"
+        "pmvc/pmvc-cli": "dev-main"
     }
 }
 ```

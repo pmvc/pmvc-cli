@@ -62,7 +62,7 @@ class PMVC_GLOBAL_CLI
         if (is_file($file)) {
             $this->_autoload = $file;
             include $file;
-            $this->dir = dirname($file);
+            $this->dir = dirname($file, 2);
             return true;
         } else {
             return !trigger_error(
@@ -279,6 +279,9 @@ class PMVC_GLOBAL_CLI
         $dir = $this->_initDotEnv();
         $parent = getOption(_RUN_APPS);
         $parent = str_replace(['..', '.'], [$dir, $dir], $parent || '');
+        if (empty($parent)) {
+            $parent = $dir;
+        }
         $input = $this->parseParams();
         $this->handleInput($input);
 
@@ -293,14 +296,15 @@ class PMVC_GLOBAL_CLI
                     }
                 }
             } else {
-                if ($input->welcome) {
-                    $this->welcome();
-                }
                 option('set', [
                     _ROUTER => 'cli',
                     _VIEW_ENGINE => $input->view,
                     _RUN_APPS => $parent,
                 ]);
+                if ($input->welcome) {
+                    $this->welcome();
+                    $this->dump('App: ' . $parent . '/' . $input->index . '.php');
+                }
                 $controller = plug('controller');
                 if ($controller->plugApp([], [], $input->index)) {
                     if ($input->index === 'worker') {
