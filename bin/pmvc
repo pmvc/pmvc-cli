@@ -301,9 +301,14 @@ class PMVC_GLOBAL_CLI
                     _VIEW_ENGINE => $input->view,
                     _RUN_APPS => $parent,
                 ]);
+                $appFile = $parent . '/' . $input->index . '.php';
                 if ($input->welcome) {
                     $this->welcome();
-                    $this->dump('App: ' . $parent . '/' . $input->index . '.php');
+                    if (is_file($appFile)) {
+                        $this->dump('App: ' . $appFile);
+                    } else {
+                        $this->dump('App: ' . $appFile . ' not found');
+                    }
                 }
                 $controller = plug('controller');
                 if ($controller->plugApp([], [], $input->index)) {
